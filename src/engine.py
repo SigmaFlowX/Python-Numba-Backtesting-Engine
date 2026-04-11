@@ -1,6 +1,7 @@
 import csv
 from DataClasses import Bar
 
+
 class DataFeedCSV:
     def __init__(self, path: str):
         self.path = path
@@ -28,3 +29,12 @@ class DataFeedCSV:
             close=float(row["close"]),
             volume=float(row["volume"]),
         )
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    feed = DataFeedCSV(path="SBER1min.csv")
+
+    for bar in feed:
+        print(bar)
