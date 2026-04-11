@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 @dataclass
 class Order:
     ticker: str
@@ -17,3 +16,12 @@ class OrderBook:
 class Position:
     size: float
     entry_price: float
+
+@dataclass
+class Bar:
+    timestamp: int
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: float
