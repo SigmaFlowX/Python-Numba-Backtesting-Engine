@@ -1,14 +1,14 @@
+from dataclasses import dataclass
 
 
-
+@dataclass
 class Order:
-    def __init__(self, ticker, size, price):
-        self.ticker = ticker
-        self.size = size
-        self.price = price
+    ticker: str
+    size: float
+    price: float
 
+@dataclass
 class OrderBook:
-    def __init__(self, ticker, bids, asks):
-        self.ticker = ticker
-        self.bids = bids
-        self.asks = asks
+    ticker:str
+    bids: dict[float, float]
+    asks: dict[float, float]
