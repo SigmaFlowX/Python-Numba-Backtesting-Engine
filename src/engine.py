@@ -1,7 +1,7 @@
 import csv
 from DataClasses import Bar
 
-class DataFeedCSV():
+class DataFeedCSV:
     def __init__(self, path: str):
         self.path = path
         self.file = None
