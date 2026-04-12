@@ -39,6 +39,6 @@ if __name__ == "__main__":
 
     start = time.perf_counter()
     for bar in feed:
-        print(bar)
+        pass
     end = time.perf_counter()
     print(f"Execution time {end - start} seconds")
