@@ -6,12 +6,12 @@ class BarDataFeedCSV:
     def __init__(self, path):
         df = pd.read_csv(path)
 
-        self.timestamp = df['timestamp'].to_numpy
-        self.close = df['close'].to_numpy
-        self.open = df['open'].to_numpy
-        self.high = df['high'].to_numpy
-        self.low = df['low'].to_numpy
-        self.volume = df['volume'].to_numpy
+        self.timestamp = df['timestamp'].to_numpy()
+        self.close = df['close'].to_numpy()
+        self.open = df['open'].to_numpy()
+        self.high = df['high'].to_numpy()
+        self.low = df['low'].to_numpy()
+        self.volume = df['volume'].to_numpy()
         self.i = 0
 
     def __iter__(self):
@@ -19,7 +19,7 @@ class BarDataFeedCSV:
         return self
 
     def __next__(self):
-        if self.i > len(self.close):
+        if self.i >= len(self.close):
             raise StopIteration
 
         bar = (
