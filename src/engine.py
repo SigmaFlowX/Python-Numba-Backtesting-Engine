@@ -1,43 +1,45 @@
-import csv
-from DataClasses import Bar
+import pandas as pd
 import time
 
 
-class DataFeedCSV:
-    def __init__(self, path: str):
-        self.path = path
-        self.file = None
-        self.reader = None
+class BarDataFeedCSV:
+    def __init__(self, path):
+        df = pd.read_csv(path)
 
-    def reset(self):
-        if self.file:
-            self.file.close()
-
-        self.file = open(self.path, "r")
-        next(self.file)
+        self.timestamp = df['timestamp'].to_numpy
+        self.close = df['close'].to_numpy
+        self.open = df['open'].to_numpy
+        self.high = df['high'].to_numpy
+        self.low = df['low'].to_numpy
+        self.volume = df['volume'].to_numpy
+        self.i = 0
 
     def __iter__(self):
-        self.reset()
+        self.i = 0
         return self
 
     def __next__(self):
-        line = next(self.file)
-        ts, o, h, l, c, v, *_ = line.strip().split(",")
+        if self.i > len(self.close):
+            raise StopIteration
 
-        return (
-            str(ts),
-            float(o),
-            float(h),
-            float(l),
-            float(c),
-            float(v),
+        bar = (
+            self.timestamp[self.i],
+            self.open[self.i],
+            self.high[self.i],
+            self.low[self.i],
+            self.close[self.i],
+            self.volume[self.i],
         )
+        self.i = self.i + 1
+        return bar
+
+
 
 def main():
     pass
 
 if __name__ == "__main__":
-    feed = DataFeedCSV(path="SBER1min.csv")
+    feed = BarDataFeedCSV(path="SBER1min.csv")
 
     start = time.perf_counter()
     for bar in feed:
