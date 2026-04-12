@@ -14,21 +14,23 @@ class DataFeedCSV:
             self.file.close()
 
         self.file = open(self.path, "r")
-        self.reader = csv.DictReader(self.file)
+        next(self.file)
 
     def __iter__(self):
         self.reset()
         return self
 
     def __next__(self):
-        row = next(self.reader)
+        line = next(self.file)
+        ts, o, h, l, c, v, *_ = line.strip().split(",")
+
         return Bar(
-            timestamp=row["timestamp"],
-            open=float(row["open"]),
-            high=float(row["high"]),
-            low=float(row["low"]),
-            close=float(row["close"]),
-            volume=float(row["volume"]),
+            timestamp=ts,
+            open=float(o),
+            high=float(h),
+            low=float(l),
+            close=float(c),
+            volume=float(v),
         )
 
 def main():
