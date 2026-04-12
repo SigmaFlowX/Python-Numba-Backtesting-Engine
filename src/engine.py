@@ -26,6 +26,17 @@ class BarDataFeedCSV:
         self.i = i + 1
         return i
 
+class Strategy:
+    pass
+
+class Engine:
+    def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy):
+        self.feed = datafeed
+        self.strategy = strategy
+
+    def run(self):
+        pass
+
 
 
 def main():
