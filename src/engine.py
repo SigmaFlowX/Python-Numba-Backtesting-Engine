@@ -24,13 +24,13 @@ class DataFeedCSV:
         line = next(self.file)
         ts, o, h, l, c, v, *_ = line.strip().split(",")
 
-        return Bar(
-            timestamp=ts,
-            open=float(o),
-            high=float(h),
-            low=float(l),
-            close=float(c),
-            volume=float(v),
+        return (
+            str(ts),
+            float(o),
+            float(h),
+            float(l),
+            float(c),
+            float(v),
         )
 
 def main():
