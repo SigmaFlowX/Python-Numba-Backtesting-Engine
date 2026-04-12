@@ -22,16 +22,9 @@ class BarDataFeedCSV:
         if self.i >= len(self.close):
             raise StopIteration
 
-        bar = (
-            self.timestamp[self.i],
-            self.open[self.i],
-            self.high[self.i],
-            self.low[self.i],
-            self.close[self.i],
-            self.volume[self.i],
-        )
-        self.i = self.i + 1
-        return bar
+        i = self.i
+        self.i = i + 1
+        return i
 
 
 
@@ -42,7 +35,9 @@ if __name__ == "__main__":
     feed = BarDataFeedCSV(path="SBER1min.csv")
 
     start = time.perf_counter()
-    for bar in feed:
-        pass
+    close = feed.close
+    for i in feed:
+        close[i]
     end = time.perf_counter()
+
     print(f"Execution time {end - start} seconds")
