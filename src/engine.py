@@ -1,5 +1,6 @@
 import csv
 from DataClasses import Bar
+import time
 
 
 class DataFeedCSV:
@@ -36,5 +37,8 @@ def main():
 if __name__ == "__main__":
     feed = DataFeedCSV(path="SBER1min.csv")
 
+    start = time.perf_counter()
     for bar in feed:
         print(bar)
+    end = time.perf_counter()
+    print(f"Execution time {end - start} seconds")
