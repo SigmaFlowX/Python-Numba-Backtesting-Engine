@@ -22,7 +22,7 @@ class DataFeedCSV:
     def __next__(self):
         row = next(self.reader)
         return Bar(
-            timestamp=int(row["timestamp"]),
+            timestamp=row["timestamp"],
             open=float(row["open"]),
             high=float(row["high"]),
             low=float(row["low"]),
