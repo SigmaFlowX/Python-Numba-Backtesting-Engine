@@ -104,10 +104,8 @@ if __name__ == "__main__":
     feed = BarDataFeedCSV(path="SBER1min.csv")
 
     start = time.perf_counter()
-    close = feed.close
 
-
-    engine = Engine(datafeed=feed, strategy=Strategy())
+    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution())
     engine.run()
 
     end = time.perf_counter()
