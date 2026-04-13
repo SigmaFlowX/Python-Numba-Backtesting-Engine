@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 
 @dataclass
+class Signal:
+    side: int
+    size: float
+
+@dataclass
 class Order:
     ticker: str
     size: float
