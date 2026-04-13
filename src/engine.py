@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from DataClasses import Bar, Signal, Order
+from DataClasses import Bar, Signal, Order, Fill
 
 
 class BarDataFeedCSV:
@@ -72,6 +72,10 @@ class Portfolio:
             self.position -= fill.size
             self.cash += fill.size * fill.price
 
+
+class Execution:
+    def execute(self, order):
+        return Fill(order.side, order.size, order.price)
 
 class Engine:
     def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy):
