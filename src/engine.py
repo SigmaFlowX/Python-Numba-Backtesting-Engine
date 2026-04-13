@@ -62,7 +62,7 @@ class Engine:
     def run(self):
 
         for event in self.feed:
-            signal = strategy.on_event(event)
+            signal = self.strategy.on_event(event)
             print(signal)
 
 
@@ -76,8 +76,8 @@ if __name__ == "__main__":
     start = time.perf_counter()
     close = feed.close
 
-    strategy = Strategy()
-    engine = Engine(datafeed=feed, strategy=strategy)
+
+    engine = Engine(datafeed=feed, strategy=Strategy())
     engine.run()
 
     end = time.perf_counter()
