@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from DataClasses import Bar
+from DataClasses import Bar, Signal
 
 
 class BarDataFeedCSV:
@@ -35,7 +35,24 @@ class BarDataFeedCSV:
         )
 
 class Strategy:
-    pass
+    def __init__(self):
+        self.prices = []
+
+    def on_bar(self, bar: Bar):
+        self.prices.append(bar.close)
+
+        if len(self.prices) < 10:
+            return None
+
+        if bar.close > sum(self.prices[-10:]) / 10:
+            return Signal(side=1, size=1)
+
+    def on_event(self, event):
+        if isinstance(event, Bar):
+            return self.on_bar(event)
+
+
+
 
 class Engine:
     def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy):
@@ -45,7 +62,8 @@ class Engine:
     def run(self):
 
         for event in self.feed:
-            pass
+            signal = strategy.on_event(event)
+            print(signal)
 
 
 
