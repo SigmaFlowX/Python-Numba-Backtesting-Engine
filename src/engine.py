@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from DataClasses import Bar, Signal
+from DataClasses import Bar, Signal, Order
 
 
 class BarDataFeedCSV:
@@ -45,13 +45,32 @@ class Strategy:
             return None
 
         if bar.close > sum(self.prices[-10:]) / 10:
-            return Signal(side=1, size=1)
+            return Signal(side="BUY", size=1, price=bar.close)
 
     def on_event(self, event):
         if isinstance(event, Bar):
             return self.on_bar(event)
 
 
+class Portfolio:
+    def __init__(self):
+        self.position = 0
+        self.cash = 1_000_000
+
+    def on_signal(self, signal):
+        if signal.side == "BUY":
+            return Order("BUY", signal.size, signal.price)
+        elif signal.side == "SELL":
+            return Order("SELL", signal.size, signal.price)
+
+    def on_fill(self, fill):
+        if fill.side == "BUY":
+            self.position += fill.size
+            self.cash -= fill.size * fill.price
+
+        elif fill.side == "SELL":
+            self.position -= fill.size
+            self.cash += fill.size * fill.price
 
 
 class Engine:
