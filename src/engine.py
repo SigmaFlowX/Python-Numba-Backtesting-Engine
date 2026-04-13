@@ -43,7 +43,9 @@ class Engine:
         self.strategy = strategy
 
     def run(self):
-        pass
+
+        for event in self.feed:
+            pass
 
 
 
@@ -55,8 +57,11 @@ if __name__ == "__main__":
 
     start = time.perf_counter()
     close = feed.close
-    for bar in feed:
-        pass
+
+    strategy = Strategy()
+    engine = Engine(datafeed=feed, strategy=strategy)
+    engine.run()
+
     end = time.perf_counter()
 
     print(f"Execution time {end - start} seconds")
