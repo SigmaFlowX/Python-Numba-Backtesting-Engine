@@ -1,5 +1,6 @@
 import pandas as pd
 import time
+from DataClasses import Bar
 
 
 class BarDataFeedCSV:
@@ -24,7 +25,14 @@ class BarDataFeedCSV:
 
         i = self.i
         self.i = i + 1
-        return i
+        return Bar(
+            timestamp=self.timestamp[i],
+            open=self.open[i],
+            high=self.high[i],
+            low=self.low[i],
+            close=self.close[i],
+            volume=self.volume[i]
+        )
 
 class Strategy:
     pass
@@ -47,8 +55,8 @@ if __name__ == "__main__":
 
     start = time.perf_counter()
     close = feed.close
-    for i in feed:
-        close[i]
+    for bar in feed:
+        pass
     end = time.perf_counter()
 
     print(f"Execution time {end - start} seconds")
