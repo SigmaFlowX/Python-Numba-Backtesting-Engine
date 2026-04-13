@@ -19,7 +19,7 @@ class Position:
 
 @dataclass
 class Bar:
-    timestamp: int
+    timestamp: str
     open: float
     high: float
     low: float
