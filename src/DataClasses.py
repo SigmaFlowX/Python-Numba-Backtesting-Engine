@@ -31,3 +31,9 @@ class Bar:
     low: float
     close: float
     volume: float
+
+@dataclass
+class Fill:
+    side: str
+    size: float
+    price: float
