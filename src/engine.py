@@ -78,16 +78,23 @@ class Execution:
         return Fill(order.side, order.size, order.price)
 
 class Engine:
-    def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy):
+    def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution):
         self.feed = datafeed
         self.strategy = strategy
+        self.portfolio = portfolio
+        self.execution = execution
 
     def run(self):
 
         for event in self.feed:
             signal = self.strategy.on_event(event)
-            print(signal)
 
+            if signal:
+                order = self.portfolio.on_signal(signal)
+
+                fill = self.execution.execute(order)
+
+                self.portfolio.on_fill(fill)
 
 
 def main():
