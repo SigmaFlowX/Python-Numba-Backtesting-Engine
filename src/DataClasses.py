@@ -3,6 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class Signal:
     side: str
+    price: float
     size: float
 
 @dataclass
