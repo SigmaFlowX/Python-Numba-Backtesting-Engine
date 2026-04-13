@@ -2,12 +2,12 @@ from dataclasses import dataclass
 
 @dataclass
 class Signal:
-    side: int
+    side: str
     size: float
 
 @dataclass
 class Order:
-    ticker: str
+    side:str
     size: float
     price: float
 
