@@ -34,7 +34,7 @@ class BarDataFeedCSV:
             volume=self.volume[i]
         )
 
-class Metrics:
+class MetricsCollector:
     def __init__(self):
         self.positions = []
         self.trades = []
@@ -42,6 +42,7 @@ class Metrics:
 
     def on_fill(self, fill):
         self.trades.append(fill)
+
     def on_bar(self, bar, portfolio):
         equity = portfolio.cash + portfolio.position * bar.close
         self.equity_curve.append(equity)
@@ -94,7 +95,7 @@ class Execution:
         return Fill(order.side, order.size, order.price)
 
 class Engine:
-    def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: Metrics):
+    def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
         self.feed = datafeed
         self.strategy = strategy
         self.portfolio = portfolio
@@ -123,7 +124,7 @@ if __name__ == "__main__":
 
     start = time.perf_counter()
 
-    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(), metrics=Metrics())
+    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(), metrics=MetricsCollector())
     engine.run()
 
     end = time.perf_counter()
