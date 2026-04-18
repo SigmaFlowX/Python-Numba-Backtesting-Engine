@@ -8,7 +8,7 @@ class BarDataFeedCSV:
     def __init__(self, path):
         df = pd.read_csv(path)
 
-        self.timestamp = df['timestamp'].to_numpy()
+        self.timestamp = pd.to_datetime(df['timestamp']).to_numpy()
         self.close = df['close'].to_numpy()
         self.open = df['open'].to_numpy()
         self.high = df['high'].to_numpy()
