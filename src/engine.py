@@ -110,6 +110,7 @@ class Engine:
                 order = self.portfolio.on_signal(signal)
 
                 fill = self.execution.execute(order)
+                self.metrics.on_fill(fill)
 
                 self.portfolio.on_fill(fill)
 
