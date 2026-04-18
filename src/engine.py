@@ -46,6 +46,10 @@ class Metrics:
         equity = portfolio.cash + portfolio.position * bar.close
         self.equity_curve.append(equity)
 
+    def on_event(self, event, portfolio):
+        if isinstance(event, Bar):
+            return self.on_bar(event, portfolio)
+
 class Strategy:
     def __init__(self):
         self.prices = []
