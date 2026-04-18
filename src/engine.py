@@ -3,6 +3,7 @@ import time
 from DataClasses import Bar, Signal, Order, Fill
 
 
+
 class BarDataFeedCSV:
     def __init__(self, path):
         df = pd.read_csv(path)
@@ -39,6 +40,7 @@ class MetricsCollector:
         self.positions = []
         self.trades = []
         self.equity_curve = []
+        self.equity_timestamps = []
 
     def on_fill(self, fill):
         self.trades.append(fill)
@@ -46,6 +48,7 @@ class MetricsCollector:
     def on_bar(self, bar, portfolio):
         equity = portfolio.cash + portfolio.position * bar.close
         self.equity_curve.append(equity)
+        self.equity_timestamps.append(bar.timestamp)
 
     def on_event(self, event, portfolio):
         if isinstance(event, Bar):
