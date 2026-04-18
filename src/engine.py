@@ -59,6 +59,8 @@ class MetricsAnalyzer:
         self.metrics = metrics
     def plot_equity(self):
         plt.plot(self.metrics.equity_timestamps, self.metrics.equity_curve)
+        plt.grid()
+        plt.title("Equity over time")
         plt.show()
 
 
@@ -141,3 +143,6 @@ if __name__ == "__main__":
     end = time.perf_counter()
 
     print(f"Execution time {end - start} seconds")
+
+    analyzer = MetricsAnalyzer(engine.metrics)
+    analyzer.plot_equity()
