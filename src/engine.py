@@ -34,6 +34,17 @@ class BarDataFeedCSV:
             volume=self.volume[i]
         )
 
+class Metrics:
+    def __init__(self):
+        self.positions = []
+        self.trades = []
+        self.equity_curve = []
+
+    def on_fill(self, fill):
+        self.trades.append(fill)
+    def on_portflio(self, portfolio):
+        self.equity_curve.append(portfolio.cash + portfolio.position * portfolio.last_price)
+
 class Strategy:
     def __init__(self):
         self.prices = []
