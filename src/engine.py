@@ -1,7 +1,7 @@
 import pandas as pd
 import time
 from DataClasses import Bar, Signal, Order, Fill
-
+import matplotlib.pyplot as plt
 
 
 class BarDataFeedCSV:
@@ -53,6 +53,14 @@ class MetricsCollector:
     def on_event(self, event, portfolio):
         if isinstance(event, Bar):
             return self.on_bar(event, portfolio)
+
+class MetricsAnalyzer:
+    def __init__(self, metrics: MetricsCollector):
+        self.metrics = metrics
+    def plot_equity(self):
+        plt.plot(self.metrics.equity_timestamps, self.metrics.equity_curve)
+        plt.show()
+
 
 class Strategy:
     def __init__(self):
