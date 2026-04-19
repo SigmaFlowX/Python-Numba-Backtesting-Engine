@@ -68,9 +68,24 @@ class MetricsAnalyzer:
 
     def plot_trades(self):
         plt.plot(self.metrics.timestamps, self.metrics.prices)
+
+        sell_ts = []
+        buy_ts = []
+        buy_prices = []
+        sell_prices = []
+
         for fill in self.metrics.trades:
             if fill.side == "BUY":
-                pass
+                buy_ts.append(fill.timestamp)
+                buy_prices.append(fill.price)
+            elif fill.side == "SELL":
+                sell_ts.append(fill.timestamp)
+                sell_prices.append(fill.price)
+
+        plt.grid()
+        plt.title("Trades")
+        plt.scatter(buy_ts, buy_prices, color="green")
+        plt.scatter(sell_ts, sell_prices, color="red")
         plt.show()
 
 
