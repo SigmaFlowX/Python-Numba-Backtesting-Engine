@@ -6,6 +6,7 @@ class Signal:
     side: str
     price: float
     size: float
+    timestamp: datetime
 
 @dataclass
 class Order:
