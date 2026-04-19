@@ -38,3 +38,4 @@ class Fill:
     side: str
     size: float
     price: float
+    timestamp: datetime
