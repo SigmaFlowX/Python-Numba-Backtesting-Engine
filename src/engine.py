@@ -92,22 +92,45 @@ class MetricsAnalyzer:
 
 
 class Strategy:
-    def __init__(self):
+    def __init__(self, fast_ma_window=100, slow_ma_window=1000):
         self.prices = []
+        self.fast_ma_window = fast_ma_window
+        self.slow_ma_window = slow_ma_window
+
+        self.prev_slow_ma = None
+        self.prev_fast_ma = None
 
     def on_bar(self, bar: Bar, portfolio):
         self.prices.append(bar.close)
 
-        if len(self.prices) < 10:
+        if len(self.prices) < self.slow_ma_window:
+
             return None
-        ma = sum(self.prices[-10:]) / 10
+        fast_ma = sum(self.prices[-self.fast_ma_window:]) / self.fast_ma_window
+        slow_ma = sum(self.prices[-self.slow_ma_window:]) / self.slow_ma_window
 
-        if portfolio.position == 0 and bar.close > ma:
-            return Signal(side="BUY", size=1, price=bar.close, timestamp=bar.timestamp)
-        if portfolio.position > 0 and bar.close < ma:
-            return Signal(side="SELL", size=portfolio.position, price=bar.close, timestamp=bar.timestamp)
+        signal = None
 
-        return None
+        if self.prev_fast_ma is not None and self.prev_slow_ma is not None:
+            if self.prev_fast_ma <= self.prev_slow_ma and fast_ma > slow_ma and portfolio.position == 0:
+                signal = Signal(
+                    side="BUY",
+                    size=1,
+                    price=bar.close,
+                    timestamp=bar.timestamp
+                )
+            elif self.prev_fast_ma >= self.prev_slow_ma and fast_ma < slow_ma and portfolio.position > 0:
+                signal = Signal(
+                    side="SELL",
+                    size=portfolio.position,
+                    price=bar.close,
+                    timestamp=bar.timestamp
+                )
+
+        self.prev_fast_ma = fast_ma
+        self.prev_slow_ma = slow_ma
+
+        return signal
 
     def on_event(self, event, portfolio):
         if isinstance(event, Bar):
