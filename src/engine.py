@@ -68,18 +68,23 @@ class Strategy:
     def __init__(self):
         self.prices = []
 
-    def on_bar(self, bar: Bar):
+    def on_bar(self, bar: Bar, portfolio):
         self.prices.append(bar.close)
 
         if len(self.prices) < 10:
             return None
+        ma = sum(self.prices[-10:]) / 10
 
-        if bar.close > sum(self.prices[-10:]) / 10:
+        if portfolio.position == 0 and bar.close > ma:
             return Signal(side="BUY", size=1, price=bar.close)
+        if portfolio.position > 0 and bar.close < ma:
+            return Signal(side="SELL", size=portfolio.position, price=bar.close)
 
-    def on_event(self, event):
+        return None
+
+    def on_event(self, event, portfolio):
         if isinstance(event, Bar):
-            return self.on_bar(event)
+            return self.on_bar(event, portfolio)
 
 
 class Portfolio:
