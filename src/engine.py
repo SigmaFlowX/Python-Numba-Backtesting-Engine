@@ -88,9 +88,9 @@ class Strategy:
         ma = sum(self.prices[-10:]) / 10
 
         if portfolio.position == 0 and bar.close > ma:
-            return Signal(side="BUY", size=1, price=bar.close)
+            return Signal(side="BUY", size=1, price=bar.close, timestamp=bar.timestamp)
         if portfolio.position > 0 and bar.close < ma:
-            return Signal(side="SELL", size=portfolio.position, price=bar.close)
+            return Signal(side="SELL", size=portfolio.position, price=bar.close, timestamp=bar.timestamp)
 
         return None
 
@@ -106,9 +106,9 @@ class Portfolio:
 
     def on_signal(self, signal):
         if signal.side == "BUY":
-            return Order("BUY", signal.size, signal.price)
+            return Order("BUY", signal.size, signal.price, signal.timestamp)
         elif signal.side == "SELL":
-            return Order("SELL", signal.size, signal.price)
+            return Order("SELL", signal.size, signal.price, signal.timestamp)
 
     def on_fill(self, fill):
         if fill.side == "BUY":
@@ -122,7 +122,7 @@ class Portfolio:
 
 class Execution:
     def execute(self, order):
-        return Fill(order.side, order.size, order.price, )
+        return Fill(order.side, order.size, order.price, order.timestamp)
 
 class Engine:
     def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
