@@ -59,10 +59,18 @@ class MetricsCollector:
 class MetricsAnalyzer:
     def __init__(self, metrics: MetricsCollector):
         self.metrics = metrics
+
     def plot_equity(self):
         plt.plot(self.metrics.timestamps, self.metrics.equity_curve)
         plt.grid()
         plt.title("Equity over time")
+        plt.show()
+
+    def plot_trades(self):
+        plt.plot(self.metrics.timestamps, self.metrics.prices)
+        for fill in self.metrics.trades:
+            if fill.side == "BUY":
+                pass
         plt.show()
 
 
@@ -114,7 +122,7 @@ class Portfolio:
 
 class Execution:
     def execute(self, order):
-        return Fill(order.side, order.size, order.price)
+        return Fill(order.side, order.size, order.price, )
 
 class Engine:
     def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
@@ -154,4 +162,4 @@ if __name__ == "__main__":
     print(f"Execution time {end - start} seconds")
 
     analyzer = MetricsAnalyzer(engine.metrics)
-    analyzer.plot_equity()
+    analyzer.plot_trades()
