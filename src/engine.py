@@ -40,7 +40,8 @@ class MetricsCollector:
         self.positions = []
         self.trades = []
         self.equity_curve = []
-        self.equity_timestamps = []
+        self.timestamps = []
+        self.prices = []
 
     def on_fill(self, fill):
         self.trades.append(fill)
@@ -48,7 +49,8 @@ class MetricsCollector:
     def on_bar(self, bar, portfolio):
         equity = portfolio.cash + portfolio.position * bar.close
         self.equity_curve.append(equity)
-        self.equity_timestamps.append(bar.timestamp)
+        self.timestamps.append(bar.timestamp)
+        self.prices.append(bar.close)
 
     def on_event(self, event, portfolio):
         if isinstance(event, Bar):
@@ -58,10 +60,12 @@ class MetricsAnalyzer:
     def __init__(self, metrics: MetricsCollector):
         self.metrics = metrics
     def plot_equity(self):
-        plt.plot(self.metrics.equity_timestamps, self.metrics.equity_curve)
+        plt.plot(self.metrics.timestamps, self.metrics.equity_curve)
         plt.grid()
         plt.title("Equity over time")
         plt.show()
+
+
 
 
 class Strategy:
@@ -90,7 +94,7 @@ class Strategy:
 class Portfolio:
     def __init__(self):
         self.position = 0
-        self.cash = 1_000_000
+        self.cash = 10_000
 
     def on_signal(self, signal):
         if signal.side == "BUY":
