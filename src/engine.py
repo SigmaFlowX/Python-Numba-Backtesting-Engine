@@ -124,7 +124,7 @@ class Engine:
 
         for event in self.feed:
             self.metrics.on_event(event, self.portfolio)
-            signal = self.strategy.on_event(event)
+            signal = self.strategy.on_event(event, self.portfolio)
             if signal:
                 order = self.portfolio.on_signal(signal)
 
