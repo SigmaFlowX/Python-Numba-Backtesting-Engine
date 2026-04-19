@@ -12,6 +12,7 @@ class Order:
     side:str
     size: float
     price: float
+    timestamp: datetime
 
 @dataclass
 class OrderBook:
