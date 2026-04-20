@@ -169,10 +169,14 @@ class Portfolio:
             self.position -= fill.size
             self.cash += fill.size * fill.price
 
+        self.cash -= fill.fee
+
 
 class Execution:
+    def __init__(self, fee_rate):
+        self.fee_rate = fee_rate
     def execute(self, order):
-        return Fill(order.side, order.size, order.price, order.timestamp)
+        return Fill(order.side, order.size, order.price, order.timestamp, order.size*order.price * self.fee_rate)
 
 class Engine:
     def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
@@ -204,7 +208,7 @@ if __name__ == "__main__":
 
     start = time.perf_counter()
 
-    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(), metrics=MetricsCollector())
+    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(fee_rate=0.00), metrics=MetricsCollector())
     engine.run()
 
     end = time.perf_counter()
