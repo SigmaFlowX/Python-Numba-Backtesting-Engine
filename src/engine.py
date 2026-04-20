@@ -155,9 +155,9 @@ class Portfolio:
         self.cash = 10_000
 
     def on_signal(self, signal):
-        if signal.side == "BUY" and self.cash >= signal.size * signal.price:
+        if signal and signal.side == "BUY" and self.cash >= signal.size * signal.price:
             return Order("BUY", signal.size, signal.price, signal.timestamp)
-        elif signal.side == "SELL":
+        elif signal and signal.side == "SELL":
             return Order("SELL", signal.size, signal.price, signal.timestamp)
 
     def on_fill(self, fill):
