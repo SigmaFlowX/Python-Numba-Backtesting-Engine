@@ -104,7 +104,7 @@ class MetricsAnalyzer:
 
 
 class Strategy:
-    def __init__(self, fast_ma_window=5, slow_ma_window=10):
+    def __init__(self, fast_ma_window=5, slow_ma_window=20):
         self.prices = []
         self.fast_ma_window = fast_ma_window
         self.slow_ma_window = slow_ma_window
@@ -127,7 +127,7 @@ class Strategy:
             if self.prev_fast_ma <= self.prev_slow_ma and fast_ma > slow_ma and portfolio.position == 0:
                 signal = Signal(
                     side="BUY",
-                    size=1,
+                    size=5,
                     price=bar.close,
                     timestamp=bar.timestamp
                 )
@@ -155,7 +155,7 @@ class Portfolio:
         self.cash = 10_000
 
     def on_signal(self, signal):
-        if signal.side == "BUY":
+        if signal.side == "BUY" and self.cash >= signal.size * signal.price:
             return Order("BUY", signal.size, signal.price, signal.timestamp)
         elif signal.side == "SELL":
             return Order("SELL", signal.size, signal.price, signal.timestamp)
