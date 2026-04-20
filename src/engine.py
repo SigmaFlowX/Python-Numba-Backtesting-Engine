@@ -18,7 +18,7 @@ class BarDataFeedCSV:
                 'low': 'min',
                 'close': 'last',
                 'volume': 'sum'
-            })
+            }).dropna()
 
         self.timestamp = df.index
         self.close = df['close'].to_numpy()
@@ -104,7 +104,7 @@ class MetricsAnalyzer:
 
 
 class Strategy:
-    def __init__(self, fast_ma_window=50, slow_ma_window=100):
+    def __init__(self, fast_ma_window=5, slow_ma_window=10):
         self.prices = []
         self.fast_ma_window = fast_ma_window
         self.slow_ma_window = slow_ma_window
@@ -200,7 +200,7 @@ def main():
     pass
 
 if __name__ == "__main__":
-    feed = BarDataFeedCSV(path="SBER1min.csv", resample_tf="60min")
+    feed = BarDataFeedCSV(path="SBER1min.csv", resample_tf="1h")
 
     start = time.perf_counter()
 
