@@ -12,7 +12,7 @@ class BarDataFeedCSV:
         df = df.set_index('timestamp')
 
         if resample_tf:
-            f = df.resample(resample_tf).agg({
+            df = df.resample(resample_tf).agg({
                 'open': 'first',
                 'high': 'max',
                 'low': 'min',
@@ -200,7 +200,7 @@ def main():
     pass
 
 if __name__ == "__main__":
-    feed = BarDataFeedCSV(path="SBER1min.csv", resample_tf="5min")
+    feed = BarDataFeedCSV(path="SBER1min.csv", resample_tf="60min")
 
     start = time.perf_counter()
 
