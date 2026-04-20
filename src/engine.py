@@ -178,6 +178,7 @@ class Execution:
     def execute(self, order):
         return Fill(order.side, order.size, order.price, order.timestamp, order.size*order.price * self.fee_rate)
 
+
 class Engine:
     def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
         self.feed = datafeed
@@ -189,15 +190,23 @@ class Engine:
     def run(self):
 
         for event in self.feed:
+
             self.metrics.on_event(event, self.portfolio)
+
             signal = self.strategy.on_event(event, self.portfolio)
-            if signal:
-                order = self.portfolio.on_signal(signal)
+            if not signal:
+                continue
 
-                fill = self.execution.execute(order)
-                self.metrics.on_fill(fill)
+            order = self.portfolio.on_signal(signal)
+            if not order:
+                continue
 
-                self.portfolio.on_fill(fill)
+            fill = self.execution.execute(order)
+            if not fill:
+                continue
+
+            self.metrics.on_fill(fill)
+            self.portfolio.on_fill(fill)
 
 
 def main():
@@ -208,7 +217,7 @@ if __name__ == "__main__":
 
     start = time.perf_counter()
 
-    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(fee_rate=0.00), metrics=MetricsCollector())
+    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(fee_rate=0.1), metrics=MetricsCollector())
     engine.run()
 
     end = time.perf_counter()
