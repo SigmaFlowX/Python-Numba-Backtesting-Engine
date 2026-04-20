@@ -41,3 +41,4 @@ class Fill:
     size: float
     price: float
     timestamp: datetime
+    fee: float
