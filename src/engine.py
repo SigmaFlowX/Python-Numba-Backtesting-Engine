@@ -5,10 +5,22 @@ import matplotlib.pyplot as plt
 
 
 class BarDataFeedCSV:
-    def __init__(self, path):
+    def __init__(self, path, resample_tf = None):
         df = pd.read_csv(path)
 
-        self.timestamp = pd.to_datetime(df['timestamp']).to_numpy()
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df = df.set_index('timestamp')
+
+        if resample_tf:
+            f = df.resample(resample_tf).agg({
+                'open': 'first',
+                'high': 'max',
+                'low': 'min',
+                'close': 'last',
+                'volume': 'sum'
+            })
+
+        self.timestamp = df.index
         self.close = df['close'].to_numpy()
         self.open = df['open'].to_numpy()
         self.high = df['high'].to_numpy()
@@ -92,7 +104,7 @@ class MetricsAnalyzer:
 
 
 class Strategy:
-    def __init__(self, fast_ma_window=100, slow_ma_window=1000):
+    def __init__(self, fast_ma_window=50, slow_ma_window=100):
         self.prices = []
         self.fast_ma_window = fast_ma_window
         self.slow_ma_window = slow_ma_window
@@ -188,7 +200,7 @@ def main():
     pass
 
 if __name__ == "__main__":
-    feed = BarDataFeedCSV(path="SBER1min.csv")
+    feed = BarDataFeedCSV(path="SBER1min.csv", resample_tf="5min")
 
     start = time.perf_counter()
 
@@ -201,3 +213,4 @@ if __name__ == "__main__":
 
     analyzer = MetricsAnalyzer(engine.metrics)
     analyzer.plot_trades()
+    analyzer.plot_equity()
