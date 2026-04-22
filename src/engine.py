@@ -69,7 +69,7 @@ class MetricsCollector:
             return self.on_bar(event, portfolio)
 
 class MetricsAnalyzer:
-    def __init__(self, metrics: MetricsCollector, risk_free_rate = 0.12):
+    def __init__(self, metrics: MetricsCollector, risk_free_rate = 0):
         self.metrics = metrics
         self.risk_free_rate = risk_free_rate
 
@@ -101,29 +101,25 @@ class MetricsAnalyzer:
         plt.scatter(sell_ts, sell_prices, color="red")
         plt.show()
 
-    def get_periods_from_timestamps(self):
-        timestamps = pd.to_datetime(self.metrics.timestamps)
-
-        ts = timestamps.view("int64")   #nsec
-        dt = np.diff(ts) / 1e9 #sec
-
-        avg_seconds = dt.mean()
-        return 365 * 24 * 60 * 60 / avg_seconds
-
     def compute_sharpe(self):
-        N = self.get_periods_from_timestamps()
+        df = pd.DataFrame({
+            "timestamp": pd.to_datetime(self.metrics.timestamps),
+            "equity": self.metrics.equity_curve
+        })
 
-        equity = np.array(self.metrics.equity_curve)
-        returns = np.diff(np.log(equity))
+        df = df.set_index("timestamp").sort_index()
+        equity = df.resample("1D").last().ffill()["equity"].dropna()
 
-        adjusted_risk_free_rate = self.risk_free_rate / N
-        excess_returns = returns - adjusted_risk_free_rate
+        log_eq = np.log(equity)
+        returns = log_eq.diff().dropna().values
 
-        mean = np.mean(excess_returns)
-        std = np.std(excess_returns)
 
-        return (mean / std) * np.sqrt(N)
+        rf_daily = self.risk_free_rate / 252
+        excess = returns - rf_daily
 
+        std = np.std(excess)
+
+        return np.mean(excess) / std * np.sqrt(252)
 
 
 
