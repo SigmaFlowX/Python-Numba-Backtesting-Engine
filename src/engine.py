@@ -103,10 +103,11 @@ class MetricsAnalyzer:
     def get_periods_from_timestamps(self):
         timestamps = pd.to_datetime(self.metrics.timestamps)
 
-        dt = timestamps.diff().dropna()
-        avg_seconds = dt.dt.total_seconds().mean()
+        ts = timestamps.view("int64")   #nsec
+        dt = np.diff(ts) / 1e9 #sec
 
-        return (365 * 24 * 60 * 60) / avg_seconds
+        avg_seconds = dt.mean()
+        return 365 * 24 * 60 * 60 / avg_seconds
 
     def compute_sharpe(self):
         equity = np.array(self.metrics.equity_curve)
@@ -245,5 +246,6 @@ if __name__ == "__main__":
     print(f"Execution time {end - start} seconds")
 
     analyzer = MetricsAnalyzer(engine.metrics)
+    print(analyzer.compute_sharpe())
     analyzer.plot_trades()
     analyzer.plot_equity()
