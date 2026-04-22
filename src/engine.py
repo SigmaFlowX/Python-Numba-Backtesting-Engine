@@ -2,7 +2,7 @@ import pandas as pd
 import time
 from DataClasses import Bar, Signal, Order, Fill
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 class BarDataFeedCSV:
     def __init__(self, path, resample_tf = None):
@@ -99,6 +99,14 @@ class MetricsAnalyzer:
         plt.scatter(buy_ts, buy_prices, color="green")
         plt.scatter(sell_ts, sell_prices, color="red")
         plt.show()
+
+    def get_periods_from_timestamps(self):
+        timestamps = pd.to_datetime(self.metrics.timestamps)
+
+        dt = timestamps.diff().dropna()
+        avg_seconds = dt.dt.total_seconds().mean()
+
+        return (365 * 24 * 60 * 60) / avg_seconds
 
 
 
@@ -217,7 +225,7 @@ if __name__ == "__main__":
 
     start = time.perf_counter()
 
-    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(fee_rate=0.1), metrics=MetricsCollector())
+    engine = Engine(datafeed=feed, strategy=Strategy(), portfolio=Portfolio(), execution=Execution(fee_rate=0.0005), metrics=MetricsCollector())
     engine.run()
 
     end = time.perf_counter()
