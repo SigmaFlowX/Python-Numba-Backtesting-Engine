@@ -69,8 +69,9 @@ class MetricsCollector:
             return self.on_bar(event, portfolio)
 
 class MetricsAnalyzer:
-    def __init__(self, metrics: MetricsCollector):
+    def __init__(self, metrics: MetricsCollector, risk_free_rate = 0.12):
         self.metrics = metrics
+        self.risk_free_rate = risk_free_rate
 
     def plot_equity(self):
         plt.plot(self.metrics.timestamps, self.metrics.equity_curve)
@@ -110,14 +111,16 @@ class MetricsAnalyzer:
         return 365 * 24 * 60 * 60 / avg_seconds
 
     def compute_sharpe(self):
-        equity = np.array(self.metrics.equity_curve)
+        N = self.get_periods_from_timestamps()
 
+        equity = np.array(self.metrics.equity_curve)
         returns = np.diff(np.log(equity))
 
-        mean = np.mean(returns)
-        std = np.std(returns)
+        adjusted_risk_free_rate = self.risk_free_rate / N
+        excess_returns = returns - adjusted_risk_free_rate
 
-        N = self.get_periods_from_timestamps()
+        mean = np.mean(excess_returns)
+        std = np.std(returns)
 
         return (mean / std) * np.sqrt(N)
 
