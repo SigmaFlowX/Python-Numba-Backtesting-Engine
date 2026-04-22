@@ -108,6 +108,18 @@ class MetricsAnalyzer:
 
         return (365 * 24 * 60 * 60) / avg_seconds
 
+    def compute_sharpe(self):
+        equity = np.array(self.metrics.equity_curve)
+
+        returns = np.diff(np.log(equity))
+
+        mean = np.mean(returns)
+        std = np.std(returns)
+
+        N = self.get_periods_from_timestamps()
+
+        return (mean / std) * np.sqrt(N)
+
 
 
 
