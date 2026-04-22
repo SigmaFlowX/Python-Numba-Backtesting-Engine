@@ -120,7 +120,7 @@ class MetricsAnalyzer:
         excess_returns = returns - adjusted_risk_free_rate
 
         mean = np.mean(excess_returns)
-        std = np.std(returns)
+        std = np.std(excess_returns)
 
         return (mean / std) * np.sqrt(N)
 
