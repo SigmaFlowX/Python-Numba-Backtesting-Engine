@@ -147,7 +147,7 @@ class Strategy:
         signal = None
 
         if self.prev_fast_ma is not None and self.prev_slow_ma is not None:
-            if self.prev_fast_ma <= self.prev_slow_ma and fast_ma > slow_ma and portfolio.position == 0:
+            if self.prev_fast_ma <= self.prev_slow_ma and fast_ma > slow_ma and portfolio.positions.get(bar.ticker, 0) == 0:
                 signal = Signal(
                     ticker=bar.ticker,
                     side="BUY",
@@ -155,11 +155,11 @@ class Strategy:
                     price=bar.close,
                     timestamp=bar.timestamp
                 )
-            elif self.prev_fast_ma >= self.prev_slow_ma and fast_ma < slow_ma and portfolio.position > 0:
+            elif self.prev_fast_ma >= self.prev_slow_ma and fast_ma < slow_ma and portfolio.positions.get(bar.ticker, 0) > 0:
                 signal = Signal(
                     ticker=bar.ticker,
                     side="SELL",
-                    size=portfolio.position,
+                    size=portfolio.positions.get(bar.ticker, 0),
                     price=bar.close,
                     timestamp=bar.timestamp
                 )
@@ -251,7 +251,7 @@ if __name__ == "__main__":
 
     print(f"Execution time {end - start} seconds")
 
-    #analyzer = MetricsAnalyzer(engine.metrics)
+    analyzer = MetricsAnalyzer(engine.metrics)
     #print(analyzer.compute_sharpe())
     #analyzer.plot_trades()
-    #analyzer.plot_equity()
+    analyzer.plot_equity()
