@@ -3,6 +3,7 @@ from datetime import datetime
 
 @dataclass
 class Signal:
+    ticker:str
     side: str
     price: float
     size: float
@@ -10,6 +11,7 @@ class Signal:
 
 @dataclass
 class Order:
+    ticker:str
     side:str
     size: float
     price: float
@@ -29,6 +31,7 @@ class Position:
 @dataclass
 class Bar:
     timestamp: datetime
+    ticker: str
     open: float
     high: float
     low: float
@@ -37,6 +40,7 @@ class Bar:
 
 @dataclass
 class Fill:
+    ticker: str
     side: str
     size: float
     price: float
