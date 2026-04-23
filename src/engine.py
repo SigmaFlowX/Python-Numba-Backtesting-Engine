@@ -200,7 +200,7 @@ class Execution:
         return Fill(order.side, order.size, order.price, order.timestamp, order.size*order.price * self.fee_rate)
 
 class Engine:
-    def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
+    def __init__(self, datafeed, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
         self.feed = datafeed
         self.strategy = strategy
         self.portfolio = portfolio
