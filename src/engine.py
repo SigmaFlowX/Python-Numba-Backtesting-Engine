@@ -203,7 +203,7 @@ class Execution:
     def __init__(self, fee_rate):
         self.fee_rate = fee_rate
     def execute(self, order):
-        return Fill(order.side, order.size, order.price, order.timestamp, order.size*order.price * self.fee_rate)
+        return Fill(order.ticker, order.side, order.size, order.price, order.timestamp, order.size*order.price * self.fee_rate)
 
 class Engine:
     def __init__(self, datafeed, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
