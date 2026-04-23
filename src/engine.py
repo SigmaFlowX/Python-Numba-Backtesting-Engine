@@ -185,17 +185,11 @@ class Portfolio:
 
     def on_fill(self, fill):
         if fill.side == "BUY":
-            if fill.ticker in self.positions:
-                self.positions[fill.ticker] += fill.size
-            else:
-                self.positions[fill.ticker] = fill.size
+            self.positions[fill.ticker] = self.positions.get(fill.ticker, 0) + fill.size
             self.cash -= fill.size * fill.price
 
         elif fill.side == "SELL":
-            if fill.ticker in self.positions:
-                self.positions[fill.ticker] -= fill.size
-            else:
-                self.positions[fill.ticker] = -fill.size #should not normally happen but will see
+            self.positions[fill.ticker] = self.positions.get(fill.ticker, 0) - fill.size
             self.cash += fill.size * fill.price
 
         self.cash -= fill.fee
