@@ -50,7 +50,7 @@ class SingleTickerBarDataFeedCSV:
             volume=self.volume[i]
         )
 
-class MetricsCollector:
+class MetricsCollector: #only works for single ticker back tests for now
     def __init__(self):
         self.positions = []
         self.trades = []
@@ -62,7 +62,9 @@ class MetricsCollector:
         self.trades.append(fill)
 
     def on_bar(self, bar, portfolio):
-        equity = portfolio.cash + portfolio.position * bar.close
+        if not bar.ticker in portfolio.positions:
+            return 1
+        equity = portfolio.cash + portfolio.positions[bar.ticker] * bar.close
         self.equity_curve.append(equity)
         self.timestamps.append(bar.timestamp)
         self.prices.append(bar.close)
@@ -249,7 +251,7 @@ if __name__ == "__main__":
 
     print(f"Execution time {end - start} seconds")
 
-    analyzer = MetricsAnalyzer(engine.metrics)
-    print(analyzer.compute_sharpe())
-    analyzer.plot_trades()
-    analyzer.plot_equity()
+    #analyzer = MetricsAnalyzer(engine.metrics)
+    #print(analyzer.compute_sharpe())
+    #analyzer.plot_trades()
+    #analyzer.plot_equity()
