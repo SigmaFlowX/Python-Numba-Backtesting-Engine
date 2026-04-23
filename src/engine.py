@@ -173,22 +173,28 @@ class Strategy:
 
 class Portfolio:
     def __init__(self):
-        self.position = 0
+        self.positions = {}
         self.cash = 10_000
 
     def on_signal(self, signal):
         if signal and signal.side == "BUY" and self.cash >= signal.size * signal.price:
-            return Order("BUY", signal.size, signal.price, signal.timestamp)
+            return Order(signal.ticker, "BUY", signal.size, signal.price, signal.timestamp)
         elif signal and signal.side == "SELL":
-            return Order("SELL", signal.size, signal.price, signal.timestamp)
+            return Order(signal.ticker, "SELL", signal.size, signal.price, signal.timestamp)
 
     def on_fill(self, fill):
         if fill.side == "BUY":
-            self.position += fill.size
+            if self.positions[fill.ticker]:
+                self.positions[fill.ticker] += fill.size
+            else:
+                self.positions[fill.ticker] = fill.size
             self.cash -= fill.size * fill.price
 
         elif fill.side == "SELL":
-            self.position -= fill.size
+            if self.positions[fill.ticker]:
+                self.positions[fill.ticker] -= fill.size
+            else:
+                self.positions[fill.ticker] = -fill.size #should not normally happen but will see
             self.cash += fill.size * fill.price
 
         self.cash -= fill.fee
