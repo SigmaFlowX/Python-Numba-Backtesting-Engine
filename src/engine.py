@@ -147,6 +147,7 @@ class Strategy:
         if self.prev_fast_ma is not None and self.prev_slow_ma is not None:
             if self.prev_fast_ma <= self.prev_slow_ma and fast_ma > slow_ma and portfolio.position == 0:
                 signal = Signal(
+                    ticker=bar.ticker,
                     side="BUY",
                     size=5,
                     price=bar.close,
@@ -154,6 +155,7 @@ class Strategy:
                 )
             elif self.prev_fast_ma >= self.prev_slow_ma and fast_ma < slow_ma and portfolio.position > 0:
                 signal = Signal(
+                    ticker=bar.ticker,
                     side="SELL",
                     size=portfolio.position,
                     price=bar.close,
