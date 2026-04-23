@@ -62,9 +62,8 @@ class MetricsCollector: #only works for single ticker back tests for now
         self.trades.append(fill)
 
     def on_bar(self, bar, portfolio):
-        if not bar.ticker in portfolio.positions:
-            return 1
-        equity = portfolio.cash + portfolio.positions[bar.ticker] * bar.close
+        pos_size = portfolio.positions.get(bar.ticker, 0)
+        equity = portfolio.cash + pos_size * bar.close
         self.equity_curve.append(equity)
         self.timestamps.append(bar.timestamp)
         self.prices.append(bar.close)
