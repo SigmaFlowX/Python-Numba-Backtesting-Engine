@@ -4,8 +4,10 @@ from DataClasses import Bar, Signal, Order, Fill
 import matplotlib.pyplot as plt
 import numpy as np
 
-class BarDataFeedCSV:
-    def __init__(self, path, resample_tf = None):
+class SingleTickerBarDataFeedCSV:
+    def __init__(self, path, ticker, resample_tf = None):
+        self.ticker=ticker
+
         df = pd.read_csv(path)
 
         df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -39,6 +41,7 @@ class BarDataFeedCSV:
         i = self.i
         self.i = i + 1
         return Bar(
+            ticker=self.ticker,
             timestamp=self.timestamp[i],
             open=self.open[i],
             high=self.high[i],
@@ -121,8 +124,6 @@ class MetricsAnalyzer:
 
         return np.mean(excess) / std * np.sqrt(252)
 
-
-
 class Strategy:
     def __init__(self, fast_ma_window=5, slow_ma_window=20):
         self.prices = []
@@ -168,7 +169,6 @@ class Strategy:
         if isinstance(event, Bar):
             return self.on_bar(event, portfolio)
 
-
 class Portfolio:
     def __init__(self):
         self.position = 0
@@ -191,13 +191,11 @@ class Portfolio:
 
         self.cash -= fill.fee
 
-
 class Execution:
     def __init__(self, fee_rate):
         self.fee_rate = fee_rate
     def execute(self, order):
         return Fill(order.side, order.size, order.price, order.timestamp, order.size*order.price * self.fee_rate)
-
 
 class Engine:
     def __init__(self, datafeed: BarDataFeedCSV, strategy: Strategy, portfolio: Portfolio, execution: Execution, metrics: MetricsCollector):
@@ -228,12 +226,11 @@ class Engine:
             self.metrics.on_fill(fill)
             self.portfolio.on_fill(fill)
 
-
 def main():
     pass
 
 if __name__ == "__main__":
-    feed = BarDataFeedCSV(path="SBER1min.csv", resample_tf="1h")
+    feed = SingleTickerBarDataFeedCSV(path="SBER1min.csv", resample_tf="1h", ticker="SBER")
 
     start = time.perf_counter()
 
